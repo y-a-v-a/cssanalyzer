@@ -1,0 +1,47 @@
+<!doctype html>
+<head>
+    <title>a</title>
+    <style>
+    html,body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    table {
+        width: 80%;
+        border-collapse: collapse;
+        margin: 50px;
+    }
+    td {
+        border: 1px solid #efefef;
+        padding: 4px;
+    }
+    </style>
+</head>
+<body>
+    <script>
+    var data = '{{XXX}}';
+	var selectors = JSON.parse(data);
+
+    var table = document.createElement('table');
+    document.querySelectorAll('body')[0].appendChild(table);
+
+	var tr = '<tr><td colspan="2">Name:</td><td>Count:</td></tr>', row;
+	for (var i = 0; i < selectors.length; i++) {
+		row = selectors[i];
+		tr += '<tr>';
+		tr += '<td colspan="2">' + row.selector + '</td>';
+		tr += '<td>' + row.count + '</td>';
+        if (row.subselectors) {
+            for (var j = 0; j < row.subselectors.length; j++) {
+                tr += '<tr>';
+                tr += '<td>•</td><td>' + row.subselectors[j].selector + '</td>';
+                tr += '<td>' + row.subselectors[j].count + '</td>';
+            }
+        }
+		tr += '</tr>';
+	}
+    table.innerHTML = tr;
+    </script>
+</body>
