@@ -54,7 +54,12 @@ function updateData(element) {
     for (var r = 0; r < cssData.length; r++) {
         if (cssData[r].selector === element.selector) {
             present = true;
-            cssData[r].count = element.count;
+            cssData[r].count = cssData[r].count + element.count;
+            if (element.subselectors) {
+                for (var j = 0; j < element.subselectors.length; j++) {
+                    cssData[r].subselectors[j].count = cssData[r].subselectors[j].count + element.subselectors[j].count;
+                }
+            }
         }
     }
     if (present === false) {

@@ -30,6 +30,16 @@
 
     console.log('Length of selectors obj: ' + selectors.length);
 
+    var selectors = selectors.sort(function(a,b) {
+        if (a.count>b.count) {
+            return -1;
+        }
+        if (b.count>a.count) {
+            return 1;
+        }
+        return 0;
+    });
+
     var table = document.createElement('table');
     document.querySelectorAll('body')[0].appendChild(table);
 
@@ -64,9 +74,11 @@
         }
     }
     console.log(result);
-    // var div = document.createElement('div');
-    // document.querySelectorAll('body')[0].appendChild(div);
-    // div.innerHTML = result;
+    console.log(result.length);
+
+    var div = document.createElement('div');
+    document.querySelectorAll('body')[0].appendChild(div);
+    div.innerHTML = JSON.stringify(result);
 
 
     </script>
