@@ -1,6 +1,7 @@
+/* globals require, console, process */
 var http = require('http');
 var fs = require('fs');
-
+var EventEmitter = require('events').EventEmitter;
 
 var cssData = JSON.parse(fs.readFileSync('data.json'));
 
@@ -14,8 +15,13 @@ var server = http.createServer(function(req, res) {
         res.end(fs.readFileSync('analyzer.js'));
     } else if (req.url === '/post') {
         req.on('data', function(data) {
-            var data = JSON.parse(data.toString('utf8'));
-            parseCSSSelectors(data);
+            // try {
+                var jsonString = data.toString('utf8');
+                var jsonData = JSON.parse(jsonString);
+                parseCSSSelectors(jsonData);
+            // } catch(e) {
+            //     console.log(e);
+            // }
             res.writeHead(200, {'Content-type': 'text/plain'});
             res.end('ok');
         });
@@ -31,11 +37,13 @@ function parseCSSSelectors(data) {
     for (var i = 0; i < data.length; i++) {
         updateData(data[i]);
     }
+    doneListener.emit('save');
 }
 function save() {
+    console.log('saving...');
     var dataString = JSON.stringify(cssData);
     fs.writeFileSync('data.json', dataString);
-    process.exit();
+    // process.exit();
 }
 
 function updateData(element) {
@@ -52,7 +60,13 @@ function updateData(element) {
     if (present === false) {
         cssData.push(element);
     }
-    console.log(cssData);
 }
 
-process.on('SIGINT', save);
+
+var doneListener = new EventEmitter();
+
+doneListener.on('save', function() {
+    save();
+});
+
+//process.on('SIGINT', save);
