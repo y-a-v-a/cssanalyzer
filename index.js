@@ -25,7 +25,7 @@ var server = http.createServer(function(req, res) {
     }
 });
 
-server.listen(8080, '127.0.0.1');
+server.listen(1337, '127.0.0.1');
 
 function parseCSSSelectors(data) {
     for (var i = 0; i < data.length; i++) {
@@ -39,6 +39,9 @@ function save() {
 }
 
 function updateData(element) {
+    if (element === null) {
+        return;
+    }
     var present = false;
     for (var r = 0; r < cssData.length; r++) {
         if (cssData[r].selector === element.selector) {
@@ -49,6 +52,7 @@ function updateData(element) {
     if (present === false) {
         cssData.push(element);
     }
+    console.log(cssData);
 }
 
 process.on('SIGINT', save);

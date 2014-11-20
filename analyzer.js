@@ -6,6 +6,7 @@ function getRandomSelectors(sheet) {
 	var rule;
 	var selector;
 	var items = [];
+	var item;
 
 	for (var i = 0; i < random.length; i++) {
 		rule = sheet.cssRules[random[i]];
@@ -15,7 +16,11 @@ function getRandomSelectors(sheet) {
 		}
 		selector = rule.selectorText;
 		
-		items.push(processSelector(selector));
+		var item = processSelector(selector);
+
+		if (typeof item !== 'undefined') {
+			items.push(item);
+		}
 	}
     return items;
 }
@@ -23,7 +28,7 @@ function getRandomSelectors(sheet) {
 function randomSet(max) {
 	var list = [];
 	var nr = Math.round(Math.random() * max);
-	while(list.length < Math.min(max, 3)) {
+	while(list.length < Math.min(max, 100)) {
 		if (list.indexOf(nr) === -1) {
 			list.push(nr);
 		}
@@ -33,6 +38,9 @@ function randomSet(max) {
 }
 
 function processSelector(selector) {
+	if (typeof selector === 'undefined') {
+		return;
+	}
 	var item = {};
     var isMultiple = selector.indexOf(',') > -1;
     var subSelectors;
@@ -64,12 +72,14 @@ function checkRule(selectorText) {
     var sheets = document.styleSheets;
     var items;
 	for (var i = 0; i < sheets.length; i++) {
-		items = getRandomSelectors(sheets[i]);
+		if (/vd\.nl/.test(sheets[i].href)) {
+			items = getRandomSelectors(sheets[i]);
+		}
 	}
     var data = JSON.stringify(items);
     try {
         var ajax = new XMLHttpRequest();
-        ajax.open('POST', 'http://127.0.0.1:8080/post', true);
+        ajax.open('POST', 'http://127.0.0.1:1337/post', true);
         ajax.send(data);
     } catch(e) {}
 }());
