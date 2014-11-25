@@ -21,6 +21,9 @@
         border: 1px solid #efefef;
         padding: 4px;
     }
+    .highlight {
+        background: #ddeeff;
+    }
     </style>
 </head>
 <body>
@@ -80,6 +83,13 @@
     document.querySelectorAll('body')[0].appendChild(div);
     div.innerHTML = JSON.stringify(result);
 
+    var table = document.querySelector('table');
+    table.addEventListener('click', function(ev) {
+        Array.prototype.slice.call(document.querySelectorAll('table tr')).forEach(function(el, idx) {
+            el.classList.remove('highlight');
+        });
+        ev.target.parentNode.classList.add('highlight');
+    });
 
     </script>
 </body>
