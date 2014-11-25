@@ -15,13 +15,13 @@ var server = http.createServer(function(req, res) {
         res.end(fs.readFileSync('analyzer.js'));
     } else if (req.url === '/post') {
         req.on('data', function(data) {
-            // try {
+            try {
                 var jsonString = data.toString('utf8');
                 var jsonData = JSON.parse(jsonString);
                 parseCSSSelectors(jsonData);
-            // } catch(e) {
-            //     console.log(e);
-            // }
+            } catch(e) {
+                console.log(e);
+            }
             res.writeHead(200, {'Content-type': 'text/plain'});
             res.end('ok');
         });
@@ -40,7 +40,7 @@ function parseCSSSelectors(data) {
     doneListener.emit('save');
 }
 function save() {
-    console.log('saving...');
+    console.log(new Date().toISOString() + ' saving...');
     var dataString = JSON.stringify(cssData);
     fs.writeFileSync('data.json', dataString);
     // process.exit();

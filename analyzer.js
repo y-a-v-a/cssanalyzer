@@ -16,7 +16,7 @@ function getRandomSelectors(sheet) {
 		}
 		selector = rule.selectorText;
 		
-		var item = processSelector(selector);
+		item = processSelector(selector);
 
 		if (typeof item !== 'undefined') {
 			items.push(item);
@@ -69,21 +69,60 @@ function checkRule(selectorText) {
 }
 
 (function() {
-	for (var j = 0; j < 10; j++) {
-		setTimeout(function() {
-		    var sheets = document.styleSheets;
-		    var items;
-			for (var i = 0; i < sheets.length; i++) {
-				if (/vd\.nl/.test(sheets[i].href)) {
-					items = getRandomSelectors(sheets[i]);
+    var sheets = document.styleSheets;
+    var all = true;
+
+    if (all === false) {
+		for (var j = 0; j < 10; j++) {
+			setTimeout(function() {
+			    var items;
+				for (var i = 0; i < sheets.length; i++) {
+					if (/vd\.nl/.test(sheets[i].href)) {
+						items = getRandomSelectors(sheets[i]);
+					}
 				}
+				sendData(items);
+			}, 250 * j);
+		}
+	}
+
+	if (all === true) {
+		for (var i = 0; i < sheets.length; i++) {
+			if (/vd\.nl/.test(sheets[i].href)) {
+				run(sheets[i]);
 			}
-		    var data = JSON.stringify(items);
-		    try {
-		        var ajax = new XMLHttpRequest();
-		        ajax.open('POST', 'http://127.0.0.1:1337/post', true);
-		        ajax.send(data);
-		    } catch(e) {}
-		}, 250 * j);
+		}
 	}
 }());
+
+function sendData(items) {
+    var ajax;
+    var data = JSON.stringify(items);
+    try {
+        ajax = new XMLHttpRequest();
+        ajax.open('POST', 'http://127.0.0.1:1337/post', true);
+        ajax.send(data);
+    } catch(e) {}
+}
+
+function run(sheet) {
+	var subSize = 50;
+	var items = [];
+	var item;
+
+	for (var i = 0; i < sheet.cssRules.length; i++) {
+		var rule = sheet.cssRules[i] ? sheet.cssRules[i].selectorText : undefined;
+		item = processSelector(rule);
+		if (typeof item !== 'undefined') {
+			items.push(item);
+		}
+	}
+	for (var j = 0; j < Math.ceil(items.length / subSize); j++) {
+		(function(k) {
+			setTimeout(function() {
+//				console.log(items.slice(k * subSize, (k * subSize) + subSize));
+				sendData(items.slice(k * subSize, (k * subSize) + subSize));
+			}, 100 * j);
+		}(j));
+	}
+}
