@@ -21,6 +21,9 @@
         border: 1px solid #efefef;
         padding: 4px;
     }
+    .path {
+        width: 400px;
+    }
     .highlight {
         background: #ddeeff;
     }
@@ -46,16 +49,23 @@
     var table = document.createElement('table');
     document.querySelectorAll('body')[0].appendChild(table);
 
-	var tr = '<tr><td colspan="2">Name:</td><td>Count:</td></tr>', row;
+	var tr = '<tr><td colspan="3">Name:</td><td>Count:</td></tr>', row;
 	for (var i = 0; i < selectors.length; i++) {
 		row = selectors[i];
 		tr += '<tr>';
 		tr += '<td colspan="2">' + row.selector + '</td>';
+        tr += '<td class="path">';
+        if (row.href.length > 0) {
+            for (var j = 0; j < row.href.length; j++) {
+                tr += row.href[j] + '<br>';
+            }
+        }
+        tr += '</td>';
 		tr += '<td>' + row.count + '</td>';
         if (row.subselectors) {
             for (var j = 0; j < row.subselectors.length; j++) {
                 tr += '<tr>';
-                tr += '<td>•</td><td>' + row.subselectors[j].selector + '</td>';
+                tr += '<td>•</td><td>' + row.subselectors[j].selector + '</td><td></td>';
                 tr += '<td>' + row.subselectors[j].count + '</td>';
             }
         }

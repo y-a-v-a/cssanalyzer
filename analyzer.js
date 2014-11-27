@@ -51,6 +51,10 @@ function processSelector(selector) {
 
     item.selector = selector;
 	item.count = checkRule(selector);
+    item.href = [];
+    if (item.count > 0) {
+        item.href.push(window.location.href);
+    }
     if (isMultiple) {
         item.subselectors = [];
         for(var k = 0; k < subSelectors.length; k++) {
